@@ -1,0 +1,34 @@
+{
+  "name": "tsl-vscode-plugin",
+  "displayName": "tsl-vscode-plugin",
+  "version": "1.0.0-alpha",
+  "author": "iGoodie",
+  "engines": {
+    "vscode": "^1.62.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "tsl",
+        "aliases": [
+          "The Spawn Language",
+          "tsl"
+        ],
+        "extensions": [
+          ".tsl"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "tsl",
+        "scopeName": "source.tsl",
+        "path": "./syntaxes/tsl.tmLanguage.json"
+      }
+    ]
+  }
+}

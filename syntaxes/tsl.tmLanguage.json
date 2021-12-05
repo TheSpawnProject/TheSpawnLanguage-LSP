@@ -1,0 +1,176 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "The Spawn Language",
+  "patterns": [
+    { "include": "#ruleset_tags" },
+    { "include": "#comments" },
+    { "include": "#keywords" },
+    { "include": "#groups" },
+    { "include": "#expressions" },
+    { "include": "#template_vars" },
+    { "include": "#captures" },
+    { "include": "#decorators" },
+    { "include": "#words" },
+    { "include": "#strings" }
+  ],
+  "repository": {
+    "ruleset_tags": {
+      "patterns": [
+        {
+          "match": "#!.*(?=#)",
+          "name": "entity.name.tag"
+        },
+        {
+          "match": "#!.*(?=\\n)",
+          "name": "entity.name.tag"
+        }
+      ]
+    },
+    "comments": {
+      "patterns": [
+        {
+          "begin": "#\\*",
+          "end": "\\*#",
+          "captures": {
+            "0": {
+              "name": "punctuation.definition.comment.tsl"
+            }
+          },
+          "name": "comment.block.tsl"
+        },
+        {
+          "begin": "#",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.tsl"
+            }
+          },
+          "end": "\\n",
+          "name": "comment.line.number-sign"
+        }
+      ]
+    },
+    "groups": {
+      "patterns": [
+        {
+          "begin": "(?<!\\\\)%",
+          "end": "(?<!\\\\)%",
+          "captures": {
+            "0": {
+              "name": "storage.type.tsl"
+            }
+          },
+          "name": "storage.type.tsl",
+          "patterns": [
+            { "include": "#expressions" },
+            { "include": "#captures" },
+            { "include": "#template_vars" }
+          ]
+        }
+      ]
+    },
+    "expressions": {
+      "patterns": [
+        {
+          "begin": "(?<!\\\\)\\${",
+          "end": "}",
+          "captures": {
+            "0": {
+              "name": "string.quoted.triple"
+            }
+          },
+          "patterns": [
+            { "include": "#template_vars" },
+            { "include": "source.js" }
+          ]
+        }
+      ]
+    },
+    "captures": {
+      "patterns": [
+        {
+          "begin": "(?<!\\\\)\\$\\w+\\(",
+          "end": "\\)",
+          "captures": {
+            "0": {
+              "name": "entity.name.function"
+            }
+          },
+          "patterns": [
+            { "match": "\\,", "name": "entity.name.function" },
+            { "include": "source.tsl" }
+          ]
+        },
+        {
+          "match": "(?<!\\\\)\\$(\\w+)",
+          "name": "entity.name.function"
+        }
+      ]
+    },
+    "decorators": {
+      "patterns": [
+        {
+          "begin": "@\\w+\\(",
+          "end": "\\)",
+          "captures": {
+            "0": {
+							"name": "entity.name.class"
+            }
+          },
+          "patterns": [
+            { "match": "\\,", "name": "entity.name.class" },
+            { "include": "source.tsl" }
+          ]
+        },
+        {
+          "match": "@(\\w+)",
+          "name": "entity.name.class"
+        }
+      ]
+    },
+    "template_vars": {
+      "patterns": [
+        {
+          "match": "\\{\\{\\w+\\}\\}",
+          "name": "entity.name.type"
+        }
+      ]
+    },
+    "words": {
+      "patterns": [
+        {
+          "match": "\\b\\d+\\b",
+          "name": "constant.numeric"
+        },
+        {
+          "match": "\\b[A-Z]+\\b",
+          "name": "keyword.control.tsl"
+        },
+        {
+          "match": "\\b[a-zA-Z]+\\b",
+          "name": ""
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.tsl",
+          "match": "(?i)\\b(ON|WITH)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "name": "string.quoted.double.tsl",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.tsl",
+          "match": "\\\\."
+        }
+      ]
+    }
+  },
+  "scopeName": "source.tsl"
+}
