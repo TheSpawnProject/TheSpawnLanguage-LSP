@@ -1,28 +1,45 @@
 {
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
   "name": "The Spawn Language",
-  "patterns": [
-    { "include": "#ruleset_tags" },
-    { "include": "#comments" },
-    { "include": "#keywords" },
-    { "include": "#groups" },
-    { "include": "#expressions" },
-    { "include": "#template_vars" },
-    { "include": "#captures" },
-    { "include": "#decorators" },
-    { "include": "#words" },
-    { "include": "#strings" }
-  ],
+  "patterns": [{ "include": "#main" }],
   "repository": {
+    "snippets": {
+      "match": "(((?:.+\r?\n)+(?:\r?\n))|.*$)",
+      "captures": {
+        "0": {
+          "patterns": []
+        }
+      }
+    },
+    "main": {
+      "patterns": [
+        { "include": "#ruleset_tags" },
+        { "include": "#comments" },
+        { "include": "#keywords" },
+        { "include": "#groups" },
+        { "include": "#expressions" },
+        { "include": "#template_vars" },
+        { "include": "#captures" },
+        { "include": "#decorators" },
+        { "include": "#words" },
+        { "include": "#strings" }
+      ]
+    },
     "ruleset_tags": {
       "patterns": [
         {
-          "match": "#!.*(?=#)",
-          "name": "entity.name.tag"
-        },
-        {
-          "match": "#!.*(?=\\n)",
-          "name": "entity.name.tag"
+          "match": "(#!)\\s*(\\w+)(.*)(?=#|\\n)",
+          "captures": {
+            "1": {
+              "name": "entity.name.tag"
+            },
+            "2": {
+              "name": "entity.name.tag"
+            },
+            "3": {
+              "patterns": [{ "include": "source.tsl" }]
+            }
+          }
         }
       ]
     },
@@ -114,7 +131,7 @@
           "end": "\\)",
           "captures": {
             "0": {
-							"name": "entity.name.class"
+              "name": "entity.name.class"
             }
           },
           "patterns": [
