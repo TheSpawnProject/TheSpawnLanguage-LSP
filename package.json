@@ -27,7 +27,10 @@
       {
         "language": "tsl",
         "scopeName": "source.tsl",
-        "path": "./syntaxes/tsl.tmLanguage.json"
+        "path": "./syntaxes/tsl.tmLanguage.json",
+        "embeddedLanguages": {
+          "source.js": "javascript"
+        }
       }
     ]
   }

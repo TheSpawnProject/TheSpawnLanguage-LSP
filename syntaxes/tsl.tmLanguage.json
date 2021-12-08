@@ -1,30 +1,17 @@
 {
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
   "name": "The Spawn Language",
-  "patterns": [{ "include": "#main" }],
+  "patterns": [
+    { "include": "#ruleset_tags" },
+    { "include": "#comments" },
+    { "include": "#capture_snippet" },
+    { "include": "#expressions" },
+    { "include": "#tokens" }
+  ],
+  "fileTypes": ["tsl"],
+  "foldingStartMarker": "^[^\\s]",
+  "foldingStopMarker": "(^\\s+)|(^$)",
   "repository": {
-    "snippets": {
-      "match": "(((?:.+\r?\n)+(?:\r?\n))|.*$)",
-      "captures": {
-        "0": {
-          "patterns": []
-        }
-      }
-    },
-    "main": {
-      "patterns": [
-        { "include": "#ruleset_tags" },
-        { "include": "#comments" },
-        { "include": "#keywords" },
-        { "include": "#groups" },
-        { "include": "#expressions" },
-        { "include": "#template_vars" },
-        { "include": "#captures" },
-        { "include": "#decorators" },
-        { "include": "#words" },
-        { "include": "#strings" }
-      ]
-    },
     "ruleset_tags": {
       "patterns": [
         {
@@ -67,6 +54,17 @@
         }
       ]
     },
+    "tokens": {
+      "patterns": [
+        { "include": "#keywords" },
+        { "include": "#groups" },
+        { "include": "#capture_vars" },
+        { "include": "#captures" },
+        { "include": "#decorators" },
+        { "include": "#words" },
+        { "include": "#strings" }
+      ]
+    },
     "groups": {
       "patterns": [
         {
@@ -81,7 +79,7 @@
           "patterns": [
             { "include": "#expressions" },
             { "include": "#captures" },
-            { "include": "#template_vars" }
+            { "include": "#capture_vars" }
           ]
         }
       ]
@@ -90,16 +88,15 @@
       "patterns": [
         {
           "begin": "(?<!\\\\)\\${",
-          "end": "}",
-          "captures": {
-            "0": {
-              "name": "string.quoted.triple"
-            }
-          },
+          "end": "(?<!\\{\\{\\w\\})}",
+          "name": "string.quoted.triple",
+          "contentName": "variable.parameter",
           "patterns": [
-            { "include": "#template_vars" },
-            { "include": "source.js" }
-          ]
+            { "include": "#capture_vars" },
+            { "include": "#numerals" },
+            { "include": "#strings" }
+          ],
+          "disabledPattern": [{ "include": "source.js" }]
         }
       ]
     },
@@ -115,12 +112,26 @@
           },
           "patterns": [
             { "match": "\\,", "name": "entity.name.function" },
-            { "include": "source.tsl" }
+            { "include": "#tokens" },
+            { "include": "#expressions" },
+            { "include": "#js_keywords" }
           ]
         },
         {
           "match": "(?<!\\\\)\\$(\\w+)",
           "name": "entity.name.function"
+        }
+      ]
+    },
+    "capture_vars": {
+      "patterns": [
+        {
+          "match": ".?(\\{\\{\\w+\\}\\})[^}]?",
+          "captures": {
+            "1": {
+              "name": "entity.name.type"
+            }
+          }
         }
       ]
     },
@@ -145,20 +156,9 @@
         }
       ]
     },
-    "template_vars": {
-      "patterns": [
-        {
-          "match": "\\{\\{\\w+\\}\\}",
-          "name": "entity.name.type"
-        }
-      ]
-    },
     "words": {
       "patterns": [
-        {
-          "match": "\\b\\d+\\b",
-          "name": "constant.numeric"
-        },
+        { "include": "#numerals" },
         {
           "match": "\\b[A-Z]+\\b",
           "name": "keyword.control.tsl"
@@ -166,6 +166,14 @@
         {
           "match": "\\b[a-zA-Z]+\\b",
           "name": ""
+        }
+      ]
+    },
+    "numerals": {
+      "patterns": [
+        {
+          "match": "\\b\\d+(\\.\\d+)?\\b",
+          "name": "constant.numeric"
         }
       ]
     },
@@ -177,14 +185,37 @@
         }
       ]
     },
-    "strings": {
-      "name": "string.quoted.double.tsl",
-      "begin": "\"",
-      "end": "\"",
+    "js_keywords": {
       "patterns": [
         {
-          "name": "constant.character.escape.tsl",
-          "match": "\\\\."
+          "name": "keyword.control.type.js",
+          "match": "\\b(let|var|const)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.tsl",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.tsl",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.single.tsl",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            {
+              "name": "constant.character.escape.tsl",
+              "match": "\\\\."
+            }
+          ]
         }
       ]
     }
