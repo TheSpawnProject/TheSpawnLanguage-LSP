@@ -1,0 +1,57 @@
+{
+  "TSL Capture with Params": {
+    "prefix": "tsl:capture(",
+    "body": ["\\$${1:myCapture}(${2:x})", "= {{$2}} $0"],
+    "description": "Declare Capture with Params"
+  },
+  "TSL Capture without Params": {
+    "prefix": "tsl:capture",
+    "body": ["\\$${1:myCapture}", "= $0"],
+    "description": "Declare Capture without Params"
+  },
+  "TSL Rule": {
+    "prefix": "tsl:rule",
+    "body": ["${0:NOTHING}", " ON $1", " WITH $2"],
+    "description": "Declare a Rule"
+  },
+  "Include External Ruleset": {
+    "prefix": "tsl:include",
+    "body": "#! INCLUDE ${1:%Path/To/Other/Ruleset.tsl%}"
+  },
+  "Run External Script": {
+    "prefix": "tsl:runscript",
+    "body": "\\${runScript(\"${1:Path/To/Script.js}\")}$0",
+    "description": "Evaluate from an external Javascript source"
+  },
+  "Both Statement": {
+    "prefix": "tsl:both",
+    "body": ["BOTH", " ${1:NOTHING}", "  AND", " ${2:NOTHING}"]
+  },
+  "Either Statement": {
+    "prefix": "tsl:either",
+    "body": ["EITHER", " ${1:NOTHING}", "  OR", " ${2:NOTHING}"]
+  },
+  "If Statement": {
+    "prefix": "tsl:if",
+    "body": ["IF ${1:true} THEN", " ${2:NOTHING}"]
+  },
+  "If/Else Statement": {
+    "prefix": "tsl:ifelse",
+    "body": ["IF ${1:true} THEN", " ${2:NOTHING}", "ELSE", " ${3:NOTHING}"]
+  },
+  "If/Elseif/Else Statement": {
+    "prefix": "tsl:ifelseifelse",
+    "body": [
+      "IF ${1:true} THEN",
+      " ${2:NOTHING}",
+      "ELSEIF ${3:true} THEN",
+      " ${4:NOTHING}",
+      "ELSE",
+      " ${5:NOTHING}"
+    ]
+  },
+  "For Loop": {
+    "prefix": "tsl:for",
+    "body": ["FOR ${1:5} TIMES", " ${2:NOTHING}"]
+  }
+}

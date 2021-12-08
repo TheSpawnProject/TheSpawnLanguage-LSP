@@ -1,6 +1,7 @@
 {
   "name": "tsl",
   "displayName": "The Spawn Language (TSL)",
+  "description": "Syntax highlighting and snippets for iGoodie's TSL",
   "version": "0.1.0",
   "author": {
     "name": "iGoodie",
@@ -20,7 +21,8 @@
   },
   "publisher": "iGoodie",
   "categories": [
-    "Programming Languages"
+    "Programming Languages",
+    "Snippets"
   ],
   "contributes": {
     "languages": [
@@ -44,6 +46,12 @@
         "embeddedLanguages": {
           "source.js": "javascript"
         }
+      }
+    ],
+    "snippets": [
+      {
+        "language": "tsl",
+        "path": "./snippets/snippets.json"
       }
     ]
   }

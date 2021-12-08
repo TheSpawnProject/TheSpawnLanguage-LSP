@@ -1,0 +1,98 @@
+# IMPORT myLibrary %path/to/my/file.js% # Future Idea
+#! COOLDOWN 1000
+#! COOLDOWN ${foo} # bar
+
+#### Captures ####
+
+$name
+= diamond # Inline comment!
+
+$someAction
+= PRINT %Hello World!% # Inline comment!
+
+$parameterizedCapture1(x, y, z)
+= PRINT ${{{x}} + {{y}} + {{z}} + hex("#FFFFFF")}
+
+$parameterizedCapture1(x, y, z)
+= PRINT ${{{x}} / {{y}} / {{z}} + hex("#FFFFFF")}
+
+$parameterizedCapture2(x)
+= PRINT %apple{{x}}%
+
+$parameterizedCapture3(x, y, z)
+= PRINT {{x}} {{y}} {{z}}
+
+$embeddedAction
+= PRINT $parameterizedAction($name,is,it) # Inline comment!
+
+$numberOne = 1
+
+$swordWithName(name)
+= %diamond_sword{Name:{{name}}}% $numberOne
+
+#### Rules ####
+
+PRINT $swordWithName(${"Asdfff"})
+ ON Dummy Event
+
+$parameterizedCapture3(${3 + 1}, 2, %Hey there%)
+ ON Dummy Event
+
+@suppressNotifications
+@suppressNotifications
+PRINT $swordWithName(%My Mighty Sword!%)
+ ON Dummy Event
+
+PRINT foo
+ ON Dummy Event
+
+$someAction # Inline comment!
+ ON Dummy Event
+
+PRINT %Hey dude! This message is evaluated @ ${_currentUnix()}%
+ ON Dummy Event
+ WITH time = 12345
+
+PRINT ${_maximumOf(10,20) + Math.random()}
+ ON Dummy Event
+
+PRINT
+%${_mult(10,20) % 5} word1 word2 word 3 \${escaped! \%100 Time to ditch indentations, ${"aye"}!%
+ON Dummy Event
+
+# @notificationVolume(2f)
+# @notificationPitch(2f, %foo%)
+EITHER
+ DROP $name
+ OR
+ (EITHER DROP apple OR DROP string)
+ OR
+ (EITHER
+    DROP apple
+    OR
+    (EITHER
+        DROP string
+        OR
+        DROP diamond))
+ ON Dummy Event
+
+### SOME EDGE CASES ###
+
+#*
+%String%
+%String with spaces%
+%String with anything%
+%String with \% escapes%
+%String with ${expression here with spaces}%
+
+${10 % 2}
+${{{X}} + 5}
+
+%String with ${10 % 2}%
+
+$call(A, B, C)
+$call(${1%1}, ${variable})
+$call()
+$call
+$call({{X}})
+*#
