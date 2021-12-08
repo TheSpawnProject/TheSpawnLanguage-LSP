@@ -1,48 +1,48 @@
 <!-- Logo -->
 <p align="center">
-  <a href="https://jitpack.io/#TheSpawnProject/TheSpawnLanguage-TextMate">
-    <img src="https://raw.githubusercontent.com/TheSpawnProject/TheSpawnLanguage-TextMate/master/.github/assets/logo.png" height="150" alt="TSL Logo" aria-label="RuntimeGoodies Logo" />
+  <a href="https://marketplace.visualstudio.com/items?itemName=iGoodie.tsl">
+    <img src="https://raw.githubusercontent.com/TheSpawnProject/TheSpawnLanguage-LSP/master/.github/assets/logo.png" height="150" alt="TSL Logo" aria-label="RuntimeGoodies Logo" />
   </a>
 </p>
 
 <!-- Slogan -->
 <p align="center">
-   TODO: Slogan here
+   Core repository to house text editor plugins for TSL and its LSP implementations.
 </p>
 
 <!-- Badges -->
 <p align="center">
   <!-- Main Badges -->
 
-  <img src="https://raw.githubusercontent.com/TheSpawnProject/TheSpawnLanguage-TextMate/master/.github/assets/main-badge.png" height="20px"/>
-  <a href="https://github.com/TheSpawnProject/TheSpawnLanguage-TextMate/releases">
-    <img src="https://img.shields.io/github/v/release/TheSpawnProject/TheSpawnLanguage-TextMate"/>
+  <img src="https://raw.githubusercontent.com/TheSpawnProject/TheSpawnLanguage-LSP/master/.github/assets/main-badge.png" height="20px"/>
+  <a href="https://github.com/TheSpawnProject/TheSpawnLanguage-LSP/releases">
+    <img src="https://img.shields.io/github/v/release/TheSpawnProject/TheSpawnLanguage-LSP"/>
   </a>
-  <a href="https://github.com/TheSpawnProject/TheSpawnLanguage-TextMate/releases">
-    <img src="https://img.shields.io/github/v/release/TheSpawnProject/TheSpawnLanguage-TextMate?include_prereleases&label=release-snapshot"/>
+  <a href="https://github.com/TheSpawnProject/TheSpawnLanguage-LSP/releases">
+    <img src="https://img.shields.io/github/v/release/TheSpawnProject/TheSpawnLanguage-LSP?include_prereleases&label=release-snapshot"/>
   </a>
-  <a href="https://github.com/TheSpawnProject/TheSpawnLanguage-TextMate">
-    <img src="https://img.shields.io/github/languages/top/TheSpawnProject/TheSpawnLanguage-TextMate"/>
+  <a href="https://github.com/TheSpawnProject/TheSpawnLanguage-LSP">
+    <img src="https://img.shields.io/github/languages/top/TheSpawnProject/TheSpawnLanguage-LSP"/>
   </a>
 
   <br/>
 
   <!-- Github Badges -->
-  <img src="https://raw.githubusercontent.com/TheSpawnProject/TheSpawnLanguage-TextMate/master/.github/assets/github-badge.png" height="20px"/>
-  <a href="https://github.com/TheSpawnProject/TheSpawnLanguage-TextMate/commits/master">
-    <img src="https://img.shields.io/github/last-commit/TheSpawnProject/TheSpawnLanguage-TextMate"/>
+  <img src="https://raw.githubusercontent.com/TheSpawnProject/TheSpawnLanguage-LSP/master/.github/assets/github-badge.png" height="20px"/>
+  <a href="https://github.com/TheSpawnProject/TheSpawnLanguage-LSP/commits/master">
+    <img src="https://img.shields.io/github/last-commit/TheSpawnProject/TheSpawnLanguage-LSP"/>
   </a>
-  <a href="https://github.com/TheSpawnProject/TheSpawnLanguage-TextMate/issues">
-    <img src="https://img.shields.io/github/issues/TheSpawnProject/TheSpawnLanguage-TextMate"/>
+  <a href="https://github.com/TheSpawnProject/TheSpawnLanguage-LSP/issues">
+    <img src="https://img.shields.io/github/issues/TheSpawnProject/TheSpawnLanguage-LSP"/>
   </a>
-  <a href="https://github.com/TheSpawnProject/TheSpawnLanguage-TextMate/tree/master/src">
-    <img src="https://img.shields.io/github/languages/code-size/TheSpawnProject/TheSpawnLanguage-TextMate"/>
+  <a href="https://github.com/TheSpawnProject/TheSpawnLanguage-LSP/tree/master/src">
+    <img src="https://img.shields.io/github/languages/code-size/TheSpawnProject/TheSpawnLanguage-LSP"/>
   </a>
 
   <br/>
 
   <!-- Support Badges -->
-  <img src="https://raw.githubusercontent.com/TheSpawnProject/TheSpawnLanguage-TextMate/master/.github/assets/support-badge.png" height="20px"/>
+  <img src="https://raw.githubusercontent.com/TheSpawnProject/TheSpawnLanguage-LSP/master/.github/assets/support-badge.png" height="20px"/>
   <a href="https://discord.gg/KNxxdvN">
     <img src="https://img.shields.io/discord/610497509437210624?label=discord"/>
   </a>
