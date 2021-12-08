@@ -2,7 +2,7 @@
   "name": "tsl",
   "displayName": "The Spawn Language (TSL)",
   "description": "Syntax highlighting and snippets for iGoodie's TSL",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "iGoodie",
     "email": "igoodie@programmer.net"
@@ -13,10 +13,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/TheSpawnProject/TheSpawnLanguage-TextMate.git"
+    "url": "https://github.com/TheSpawnProject/TheSpawnLanguage-LSP.git"
   },
   "bugs": {
-    "url": "https://github.com/TheSpawnProject/TheSpawnLanguage-TextMate/issues",
+    "url": "https://github.com/TheSpawnProject/TheSpawnLanguage-LSP/issues",
     "email": "igoodie@programmer.net"
   },
   "publisher": "iGoodie",
