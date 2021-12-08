@@ -1,65 +1,64 @@
-# tsl-vscode-plugin README
+<!-- Logo -->
+<p align="center">
+  <a href="https://jitpack.io/#TheSpawnProject/TheSpawnLanguage-TextMate">
+    <img src="https://raw.githubusercontent.com/TheSpawnProject/TheSpawnLanguage-TextMate/master/.github/assets/logo.png" height="150" alt="TSL Logo" aria-label="RuntimeGoodies Logo" />
+  </a>
+</p>
 
-This is the README for your extension "tsl-vscode-plugin". After writing up a brief description, we recommend including the following sections.
+<!-- Slogan -->
+<p align="center">
+   TODO: Slogan here
+</p>
 
-## Features
+<!-- Badges -->
+<p align="center">
+  <!-- Main Badges -->
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+  <img src="https://raw.githubusercontent.com/TheSpawnProject/TheSpawnLanguage-TextMate/master/.github/assets/main-badge.png" height="20px"/>
+  <a href="https://github.com/TheSpawnProject/TheSpawnLanguage-TextMate/releases">
+    <img src="https://img.shields.io/github/v/release/TheSpawnProject/TheSpawnLanguage-TextMate"/>
+  </a>
+  <a href="https://github.com/TheSpawnProject/TheSpawnLanguage-TextMate/releases">
+    <img src="https://img.shields.io/github/v/release/TheSpawnProject/TheSpawnLanguage-TextMate?include_prereleases&label=release-snapshot"/>
+  </a>
+  <a href="https://github.com/TheSpawnProject/TheSpawnLanguage-TextMate">
+    <img src="https://img.shields.io/github/languages/top/TheSpawnProject/TheSpawnLanguage-TextMate"/>
+  </a>
 
-For example if there is an image subfolder under your extension project workspace:
+  <br/>
 
-\!\[feature X\]\(images/feature-x.png\)
+  <!-- Github Badges -->
+  <img src="https://raw.githubusercontent.com/TheSpawnProject/TheSpawnLanguage-TextMate/master/.github/assets/github-badge.png" height="20px"/>
+  <a href="https://github.com/TheSpawnProject/TheSpawnLanguage-TextMate/commits/master">
+    <img src="https://img.shields.io/github/last-commit/TheSpawnProject/TheSpawnLanguage-TextMate"/>
+  </a>
+  <a href="https://github.com/TheSpawnProject/TheSpawnLanguage-TextMate/issues">
+    <img src="https://img.shields.io/github/issues/TheSpawnProject/TheSpawnLanguage-TextMate"/>
+  </a>
+  <a href="https://github.com/TheSpawnProject/TheSpawnLanguage-TextMate/tree/master/src">
+    <img src="https://img.shields.io/github/languages/code-size/TheSpawnProject/TheSpawnLanguage-TextMate"/>
+  </a>
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+  <br/>
 
-## Requirements
+  <!-- Support Badges -->
+  <img src="https://raw.githubusercontent.com/TheSpawnProject/TheSpawnLanguage-TextMate/master/.github/assets/support-badge.png" height="20px"/>
+  <a href="https://discord.gg/KNxxdvN">
+    <img src="https://img.shields.io/discord/610497509437210624?label=discord"/>
+  </a>
+  <a href="https://www.patreon.com/iGoodie">
+    <img src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3DiGoodie%26type%3Dpatrons"/>
+  </a>
+</p>
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+# Description
 
-## Extension Settings
+TODO
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+## License
 
-For example:
+&copy; 2021 Taha Anılcan Metinyurt (iGoodie)
 
-This extension contributes the following settings:
+For any part of this work for which the license is applicable, this work is licensed under the [Attribution-NonCommercial-NoDerivatives 4.0 International](http://creativecommons.org/licenses/by-nc-nd/4.0/) license. (See LICENSE).
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a>

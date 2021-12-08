@@ -1,11 +1,24 @@
 {
-  "name": "tsl-vscode-plugin",
-  "displayName": "tsl-vscode-plugin",
-  "version": "1.0.0-alpha",
-  "author": "iGoodie",
+  "name": "tsl",
+  "displayName": "The Spawn Language (TSL)",
+  "version": "0.1.0",
+  "author": {
+    "name": "iGoodie",
+    "email": "igoodie@programmer.net"
+  },
+  "icon": "images/icon.png",
   "engines": {
     "vscode": "^1.62.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TheSpawnProject/TheSpawnLanguage-TextMate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TheSpawnProject/TheSpawnLanguage-TextMate/issues",
+    "email": "igoodie@programmer.net"
+  },
+  "publisher": "iGoodie",
   "categories": [
     "Programming Languages"
   ],

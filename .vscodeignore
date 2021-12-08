@@ -1,4 +1,22 @@
+# folders
 .vscode/**
 .vscode-test/**
+src
+out
+node_modules
+**/tsconfig.json
+**/tslint.json
+**/*.map
+**/*.ts
+*.vsix
+
+# Specific files
 .gitignore
-vsc-extension-quickstart.md
+webpack.config.js
+CONTRIBUTING.md
+package-lock.json
+.prettierrc
+
+# Special exclusions
+images
+!images/icon.png
