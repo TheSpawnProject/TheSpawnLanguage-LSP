@@ -1,4 +1,4 @@
-# IMPORT myLibrary %path/to/my/file.js% # Future Idea
+#! INCLUDE %Path/To/Other/Ruleset.tsl%
 #! COOLDOWN 1000
 #! COOLDOWN ${foo} # bar
 

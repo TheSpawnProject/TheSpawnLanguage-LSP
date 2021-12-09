@@ -2,7 +2,8 @@
   "name": "tsl",
   "displayName": "The Spawn Language (TSL)",
   "description": "Syntax highlighting and snippets for iGoodie's TSL",
-  "version": "0.2.0",
+  "version": "0.3.0-alpha",
+  "publisher": "iGoodie",
   "author": {
     "name": "iGoodie",
     "email": "igoodie@programmer.net"
@@ -11,6 +12,7 @@
   "engines": {
     "vscode": "^1.62.0"
   },
+  "main": "./build/vsc/extension.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/TheSpawnProject/TheSpawnLanguage-LSP.git"
@@ -19,12 +21,17 @@
     "url": "https://github.com/TheSpawnProject/TheSpawnLanguage-LSP/issues",
     "email": "igoodie@programmer.net"
   },
-  "publisher": "iGoodie",
   "categories": [
     "Programming Languages",
     "Snippets"
   ],
   "contributes": {
+    "commands": [
+      {
+        "command": "extension.tsl",
+        "title": "The Spawn Language Server"
+      }
+    ],
     "languages": [
       {
         "id": "tsl",
@@ -54,5 +61,29 @@
         "path": "./snippets/snippets.json"
       }
     ]
+  },
+  "activationEvents": [
+    "onLanguage:tsl"
+  ],
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "test": "node ./out/test/runTest.js"
+  },
+  "dependencies": {
+    "vscode-languageclient": "5.1.1"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.1.1",
+    "@types/mocha": "^5.2.6",
+    "@types/node": "^10.12.21",
+    "@types/vscode": "^1.38.0",
+    "glob": "^7.1.4",
+    "mocha": "^6.1.4",
+    "tslint": "^5.12.1",
+    "typescript": "^3.3.1",
+    "vscode-test": "^1.2.0"
   }
 }
