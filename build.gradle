@@ -19,7 +19,7 @@ dependencies {
     implementation "com.github.iGoodie:RuntimeGoodies:1.0.0"
 
     // TheSpawnLanguage (TSL)
-    implementation 'com.github.TheSpawnProject:The-Spawn-Language:bb67e331d8'
+    implementation 'com.github.TheSpawnProject:The-Spawn-Language:c8d9e2a321'
 
     // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.0'

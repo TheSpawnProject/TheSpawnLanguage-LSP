@@ -2,6 +2,7 @@ package net.programmer.igoodie.lsp;
 
 import net.programmer.igoodie.lsp.service.TSLSTextDocumentService;
 import net.programmer.igoodie.lsp.service.TSLSWorkspaceService;
+import net.programmer.igoodie.lsp.tokens.TSLSSemanticTokens;
 import net.programmer.igoodie.tsl.TheSpawnLanguage;
 import org.eclipse.lsp4j.*;
 import org.eclipse.lsp4j.services.*;
@@ -38,9 +39,7 @@ public class TSLServer implements LanguageServer, LanguageClientAware {
         HoverOptions hoverOptions = new HoverOptions();
         capabilities.setHoverProvider(hoverOptions);
 
-        SemanticTokensWithRegistrationOptions semanticTokenOpts = new SemanticTokensWithRegistrationOptions();
-        semanticTokenOpts.setFull(true);
-        capabilities.setSemanticTokensProvider(semanticTokenOpts);
+        capabilities.setSemanticTokensProvider(TSLSSemanticTokens.getSemanticTokensWithRegistrationOptions());
 
         ServerInfo serverInfo = new ServerInfo();
         serverInfo.setName("TSL");

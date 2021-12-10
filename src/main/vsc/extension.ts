@@ -1,9 +1,9 @@
 import * as path from "path";
 import * as vscode from "vscode";
 
-import { LanguageClientOptions } from "vscode-languageclient";
-import { LanguageClient } from "vscode-languageclient";
-import { ServerOptions } from "vscode-languageclient";
+import { LanguageClientOptions } from "vscode-languageclient/node";
+import { LanguageClient } from "vscode-languageclient/node";
+import { ServerOptions } from "vscode-languageclient/node";
 
 const main = "net.programmer.igoodie.lsp.TSLServerLauncher";
 
@@ -12,7 +12,15 @@ export function activate(context: vscode.ExtensionContext) {
 
   const { JAVA_HOME } = process.env;
 
-  if (!JAVA_HOME) return; // TODO: What to do now..?
+  if (!JAVA_HOME) {
+    vscode.window.showWarningMessage(
+      "Java is not installed in this device. TSL won't be able to assist you while coding your rulesets.",
+      "Visit Download Page",
+      "Ignore",
+      "Don't Show This Again"
+    );
+    return; // TODO: What to do now..?
+  }
 
   const excecutable: string = path.join(JAVA_HOME, "bin", "java");
   const classPath = path.join(__dirname, "..", "libs", "ls-launcher.jar");
@@ -25,8 +33,10 @@ export function activate(context: vscode.ExtensionContext) {
   };
 
   const clientOptions: LanguageClientOptions = {
-    // Register the server for plain text documents
-    documentSelector: [{ scheme: "file", language: "tsl" }],
+    documentSelector: [
+      { scheme: "file", language: "tsl" },
+      { scheme: "untitled", language: "tsl" },
+    ],
   };
 
   const disposable = new LanguageClient(

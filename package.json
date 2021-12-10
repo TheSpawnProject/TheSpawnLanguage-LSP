@@ -45,6 +45,11 @@
         "configuration": "./language-configuration.json"
       }
     ],
+    "configurationDefaults": {
+      "[tsl]": {
+        "editor.semanticHighlighting.enabled": true
+      }
+    },
     "grammars": [
       {
         "language": "tsl",
@@ -63,7 +68,8 @@
     ]
   },
   "activationEvents": [
-    "onLanguage:tsl"
+    "onLanguage:tsl",
+    "onCommand:extension.tsl"
   ],
   "scripts": {
     "vscode:prepublish": "npm run compile",
@@ -73,7 +79,7 @@
     "test": "node ./out/test/runTest.js"
   },
   "dependencies": {
-    "vscode-languageclient": "5.1.1"
+    "vscode-languageclient": "7.0.0"
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",
