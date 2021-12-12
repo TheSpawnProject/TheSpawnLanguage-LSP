@@ -154,6 +154,10 @@
       "patterns": [
         { "include": "#numerals" },
         {
+          "match": "DISPLAYING",
+          "name": "storage.modifier"
+        },
+        {
           "match": "\\b[A-Z]+\\b",
           "name": "keyword.control.tsl"
         },

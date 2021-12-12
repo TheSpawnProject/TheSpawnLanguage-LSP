@@ -36,12 +36,13 @@ public class CursorPlacement {
 
     private void analyzeDocument() {
         lineTypes = new TSLSnippetBuffer.Type[tslDocument.getLines().length];
+        ArrayAccessor<TSLSnippetBuffer.Type> lineTypesAccessor = ArrayAccessor.of(lineTypes);
 
         for (TSLSnippetBuffer snippetBuffer : tslDocument.getSnippetBuffers()) {
             List<TSLToken> tokens = snippetBuffer.getTokens();
             for (TSLToken token : tokens) {
                 int line = token.getLine();
-                lineTypes[line - 1] = snippetBuffer.getType();
+                lineTypesAccessor.set(line - 1, snippetBuffer.getType());
             }
         }
     }

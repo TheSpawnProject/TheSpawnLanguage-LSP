@@ -44,8 +44,8 @@ public class TSLDocument {
         this.lines = text.split("\\r?\\n");
         try {
             this.syntaxError = null;
-            this.ruleset = new TSLParser(tsl).parse(text);
             this.lexer = new TSLLexer(text).lex();
+            this.ruleset = new TSLParser(tsl).parse(text);
 
         } catch (TSLSyntaxError syntaxError) {
             this.syntaxError = syntaxError;

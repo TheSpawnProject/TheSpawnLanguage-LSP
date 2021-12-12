@@ -12,6 +12,7 @@ public class TSLSSemanticTokenCapabilities extends Capabilities<SemanticTokensWi
         COMMENT(0, SemanticTokenTypes.Comment),
         FUNCTION(1, SemanticTokenTypes.Function),
         VARIABLE(2, SemanticTokenTypes.Variable),
+        KEYWORD(3, SemanticTokenTypes.Keyword),
         ;
 
         private final int id;
@@ -32,7 +33,7 @@ public class TSLSSemanticTokenCapabilities extends Capabilities<SemanticTokensWi
     }
 
     public enum TokenTypeModifiers {
-//        DECLARATION(1, SemanticTokenModifiers.Declaration),
+//        ABSTRACT(1, SemanticTokenModifiers.Abstract),
 //        READONLY(1 << 1, SemanticTokenModifiers.Readonly),
 //        DOCUMENTATION(1 << 2, SemanticTokenModifiers.Documentation)
         ;
