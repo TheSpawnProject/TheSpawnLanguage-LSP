@@ -43,7 +43,7 @@ public class TSLSTextDocumentService implements TextDocumentService {
 //                completionList.addAll(completionService.getActionKeywords(params, tslDocument));
 //                completionList.addAll(completionService.getCaptures(params, tslDocument));
 
-            } else if(placement.getSnippetType().orElse(null) == TSLSnippetBuffer.Type.CAPTURE) {
+            } else if (placement.getSnippetType().orElse(null) == TSLSnippetBuffer.Type.CAPTURE) {
                 completionList.addAll(completionService.getActionKeywords(params, tslDocument));
                 completionList.addAll(completionService.getCaptures(params, tslDocument));
 
@@ -66,12 +66,10 @@ public class TSLSTextDocumentService implements TextDocumentService {
     public CompletableFuture<Hover> hover(HoverParams params) {
         Hover hover = new Hover();
 
-        List<Either<String, MarkedString>> list = new LinkedList<>();
-//        list.add(Either.forLeft("Foo"));
-//        list.add(Either.forLeft("Bar"));
-//        list.add(Either.forLeft("Baz"));
+        TSLDocument tslDocument = openDocuments.getDocument(params.getTextDocument());
+        CursorPlacement placement = tslDocument.getPlacement(params.getPosition());
 
-        hover.setContents(list);
+        hover.setContents(placement.debugContent());
 
         return CompletableFuture.completedFuture(hover);
     }
