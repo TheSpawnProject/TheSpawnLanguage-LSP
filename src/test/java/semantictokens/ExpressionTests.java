@@ -13,6 +13,7 @@ public class ExpressionTests {
         TSLSSemanticTokens semanticTokens = tslDocument.generateSemanticTokens();
         Assertions.assertEquals(4, semanticTokens.getTokens().size());
     }
+
     @Test
     public void testExpressionCaptureVars2() {
         TSLDocument tslDocument = new TSLDocument("", "# IMPORT myLibrary %path/to/my/file.js% # Future Idea\n" +
@@ -110,5 +111,5 @@ public class ExpressionTests {
         TSLSSemanticTokens semanticTokens = tslDocument.generateSemanticTokens();
         System.out.println(semanticTokens.serialize());
     }
-
+    
 }

@@ -1,5 +1,6 @@
 package net.programmer.igoodie.lsp.tokens;
 
+import net.programmer.igoodie.lsp.capability.TSLSSemanticTokenCapabilities;
 import org.jetbrains.annotations.NotNull;
 
 public class TSLSSemanticToken implements Comparable<TSLSSemanticToken> {
@@ -54,7 +55,7 @@ public class TSLSSemanticToken implements Comparable<TSLSSemanticToken> {
         return this;
     }
 
-    public TSLSSemanticToken setType(TSLSSemanticTokens.TokenTypes tokenType) {
+    public TSLSSemanticToken setType(TSLSSemanticTokenCapabilities.TokenTypes tokenType) {
         return setType(tokenType.getId());
     }
 

@@ -10,7 +10,7 @@
   },
   "icon": "images/icon.png",
   "engines": {
-    "vscode": "^1.62.0"
+    "vscode": "^1.22.0"
   },
   "main": "./build/vsc/extension.js",
   "repository": {

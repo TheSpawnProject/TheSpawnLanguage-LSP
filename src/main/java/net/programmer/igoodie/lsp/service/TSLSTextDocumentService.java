@@ -2,29 +2,30 @@ package net.programmer.igoodie.lsp.service;
 
 import net.programmer.igoodie.lsp.TSLServer;
 import net.programmer.igoodie.lsp.data.TSLDocument;
+import net.programmer.igoodie.lsp.data.TSLSOpenDocuments;
 import net.programmer.igoodie.lsp.tokens.TSLSSemanticTokens;
 import net.programmer.igoodie.tsl.parser.token.TSLCaptureCall;
+import net.programmer.igoodie.util.StringUtilities;
 import org.eclipse.lsp4j.*;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
 import org.eclipse.lsp4j.services.TextDocumentService;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class TSLSTextDocumentService implements TextDocumentService {
 
-    private final Map<String, TSLDocument> OPEN_TSL_DOCUMENTS = new HashMap<>();
-
     private final TSLServer server;
     private final TSLSDiagnosticService diagnosticService;
+
+    private final TSLSOpenDocuments openDocuments;
 
     public TSLSTextDocumentService(TSLServer server) {
         this.server = server;
         this.diagnosticService = new TSLSDiagnosticService();
+        this.openDocuments = new TSLSOpenDocuments();
     }
 
     @Override
@@ -32,62 +33,64 @@ public class TSLSTextDocumentService implements TextDocumentService {
         return CompletableFuture.supplyAsync(() -> {
             List<CompletionItem> completionList = new LinkedList<>();
 
-//            CompletionItem completionItem2 = new CompletionItem();
-//            completionItem2.setLabel("tsldebug:openfiles");
-//            StringBuilder stringBuilder2 = new StringBuilder();
-//            OPEN_TSL_DOCUMENTS.forEach((key, document) -> {
-//                stringBuilder2.append(key).append("\n");
-//            });
-//            completionItem2.setInsertText(stringBuilder2.toString());
-//            completionItem2.setKind(CompletionItemKind.Module);
-//            completionList.add(completionItem2);
+            TSLDocument tslDocument = openDocuments.getDocument(params.getTextDocument());
 
-            TSLDocument tslDocument = OPEN_TSL_DOCUMENTS.get(params.getTextDocument().getUri());
+//            {
+//                CompletionItem completionItem = new CompletionItem();
+//                completionItem.setLabel("tsl:word_debug");
+//                completionItem.setDetail(tslDocument.getWord(param.get));
+//                completionItem.setDocumentation(new MarkupContent(MarkupKind.MARKDOWN,
+//                        "```tsl\n" + "\n```"));
+//                completionItem.setKind(CompletionItemKind.Constant);
+//                completionList.add(completionItem);
+//            }
+
+            tslDocument.getLanguage().ACTION_REGISTRY.stream().forEach(entry -> {
+                String actionName = StringUtilities.allUpper(entry.getKey());
+                CompletionItem completionItem = new CompletionItem();
+                completionItem.setLabel(actionName);
+                completionItem.setDetail("Action: " + actionName);
+                completionItem.setDocumentation(new MarkupContent(MarkupKind.MARKDOWN,
+                        "```tsl\n" + "\n```"));
+                completionItem.setKind(CompletionItemKind.Constant);
+                completionList.add(completionItem);
+            });
 
             tslDocument.getCaptureSnippets().forEach((captureName, snippet) -> {
                 TSLCaptureCall headerToken = snippet.getHeaderToken();
+                List<String> headerArgs = headerToken.getArgs();
                 CompletionItem completionItem = new CompletionItem();
-                if (headerToken.getArgs() != null) {
-                    StringBuilder builder = new StringBuilder("$" + snippet.getName());
-                    for (int i = 0; i < headerToken.getArgs().size(); i++) {
+                StringBuilder builder = new StringBuilder(snippet.getName().replaceAll("\\$", "\\$"));
+                if (headerArgs != null && headerArgs.size() != 0) {
+                    builder.append('(');
+                    for (int i = 0; i < headerArgs.size(); i++) {
                         builder.append("${")
                                 .append(i + 1)
                                 .append(":")
-                                .append(headerToken.getArgs().get(i))
+                                .append(headerArgs.get(i))
                                 .append("}");
-                        if (i != headerToken.getArgs().size() - 1) {
+                        if (i != headerArgs.size() - 1) {
                             builder.append(", ");
                         }
                     }
-                    completionItem.setInsertText(builder.toString());
-                } else {
-                    completionItem.setInsertText("$" + snippet.getName());
+                    builder.append(")");
                 }
+                completionItem.setInsertText(builder.toString());
+                completionItem.setInsertTextFormat(InsertTextFormat.Snippet);
                 completionItem.setLabel("$" + captureName);
                 completionItem.setDetail("Detail text here");
                 completionItem.setDocumentation(new MarkupContent(MarkupKind.MARKDOWN,
                         snippet.getCapturedTokens().stream()
                                 .map(token -> token.getRaw().replaceAll("`", "\\`"))
-                                .collect(Collectors.joining(" ", "```", "```"))));
+                                .collect(Collectors.joining(" ", "```tsl\n = ", "\n```"))));
                 completionItem.setKind(CompletionItemKind.Function);
                 completionList.add(completionItem);
             });
 
             CompletionItem completionItem = new CompletionItem();
-            completionItem.setLabel("tsl:debugg");
-            StringBuilder stringBuilder = new StringBuilder();
+            completionItem.setLabel("tsl:semantic_debug");
             TSLSSemanticTokens semanticTokens = tslDocument.generateSemanticTokens();
-            List<Integer> data = semanticTokens.serialize().getData();
-            for (int i = 0; i < data.size() / 5; i++) {
-                stringBuilder
-                        .append(semanticTokens.getTokens().get(i)).append("\n")
-                        .append(data.get(5 * i)).append(" ")
-                        .append(data.get(5 * i + 1)).append(" ")
-                        .append(data.get(5 * i + 2)).append(" ")
-                        .append(data.get(5 * i + 3)).append(" ")
-                        .append(data.get(5 * i + 4)).append("\n");
-            }
-            completionItem.setInsertText(stringBuilder.toString());
+            completionItem.setInsertText(semanticTokens.debugString());
             completionItem.setKind(CompletionItemKind.Module);
             completionList.add(completionItem);
 
@@ -111,7 +114,7 @@ public class TSLSTextDocumentService implements TextDocumentService {
 
     @Override
     public CompletableFuture<SemanticTokens> semanticTokensFull(SemanticTokensParams params) {
-        TSLDocument tslDocument = OPEN_TSL_DOCUMENTS.get(params.getTextDocument().getUri());
+        TSLDocument tslDocument = openDocuments.getDocument(params.getTextDocument());
         SemanticTokens serialized = tslDocument.generateSemanticTokens().serialize();
         return CompletableFuture.completedFuture(serialized);
     }
@@ -120,35 +123,25 @@ public class TSLSTextDocumentService implements TextDocumentService {
 
     @Override
     public void didOpen(DidOpenTextDocumentParams params) {
-        TextDocumentItem textDocument = params.getTextDocument();
-        String uri = textDocument.getUri();
-        String text = textDocument.getText();
-
-        TSLDocument tslDocument = new TSLDocument(uri, text);
-
-        OPEN_TSL_DOCUMENTS.put(uri, tslDocument);
-
+        TSLDocument tslDocument = openDocuments.getDocument(params.getTextDocument());
         PublishDiagnosticsParams diagnosticsParams = diagnosticService.diagnose(tslDocument);
         server.getClient().publishDiagnostics(diagnosticsParams);
     }
 
     @Override
     public void didChange(DidChangeTextDocumentParams params) {
-        VersionedTextDocumentIdentifier textDocument = params.getTextDocument();
-        String uri = textDocument.getUri();
-        TSLDocument tslDocument = OPEN_TSL_DOCUMENTS.computeIfAbsent(uri, TSLDocument::new);
+        TSLDocument tslDocument = openDocuments.getDocument(params.getTextDocument());
         for (TextDocumentContentChangeEvent change : params.getContentChanges()) {
             tslDocument.setText(change.getText());
         }
-
         PublishDiagnosticsParams diagnosticsParams = diagnosticService.diagnose(tslDocument);
         server.getClient().publishDiagnostics(diagnosticsParams);
     }
 
     @Override
     public void didClose(DidCloseTextDocumentParams params) {
-        // For some reason, when switching tabs, VSCode sends didClose but not didOpen...
-        OPEN_TSL_DOCUMENTS.remove(params.getTextDocument().getUri());
+        String documentUri = params.getTextDocument().getUri();
+        openDocuments.remove(documentUri);
     }
 
     @Override

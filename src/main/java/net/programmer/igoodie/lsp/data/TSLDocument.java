@@ -1,5 +1,6 @@
 package net.programmer.igoodie.lsp.data;
 
+import net.programmer.igoodie.lsp.capability.TSLSSemanticTokenCapabilities;
 import net.programmer.igoodie.lsp.tokens.TSLSSemanticToken;
 import net.programmer.igoodie.lsp.tokens.TSLSSemanticTokens;
 import net.programmer.igoodie.tsl.TheSpawnLanguage;
@@ -12,6 +13,8 @@ import net.programmer.igoodie.tsl.parser.token.TSLSymbol;
 import net.programmer.igoodie.tsl.parser.token.TSLToken;
 import net.programmer.igoodie.tsl.runtime.TSLRuleset;
 import net.programmer.igoodie.tsl.util.ExpressionUtils;
+import net.programmer.igoodie.util.ArrayAccessor;
+import org.eclipse.lsp4j.Position;
 
 import java.util.List;
 import java.util.Map;
@@ -19,7 +22,7 @@ import java.util.Map;
 public class TSLDocument {
 
     protected String uri;
-    protected String text;
+    protected String[] lines;
 
     protected TheSpawnLanguage tsl = new TheSpawnLanguage();
     protected TSLRuleset ruleset = new TSLParser(tsl).parse("");
@@ -35,7 +38,7 @@ public class TSLDocument {
     }
 
     public void setText(String text) {
-        this.text = text;
+        this.lines = text.split("\r?\n");
         try {
             this.syntaxError = null;
             this.ruleset = new TSLParser(tsl).parse(text);
@@ -47,6 +50,35 @@ public class TSLDocument {
 
     public String getUri() {
         return uri;
+    }
+
+    public String[] getLines() {
+        return lines;
+    }
+
+    public String getWord(Position position) {
+        String line = ArrayAccessor.of(lines).getOrDefault(position.getLine(), "");
+        int start = 0;
+        int end = 0;
+        for (int i = 0; i < line.length(); i++) {
+            char prev = i == 0 ? '\0' : line.charAt(i - 1);
+            char current = line.charAt(i);
+
+            if (current != ' ' && Character.isWhitespace(prev)) {
+                start = i;
+            }
+
+            end = i;
+
+            if (position.getCharacter() == i) {
+                break;
+            }
+        }
+        return start == end ? "" : line.substring(start, end);
+    }
+
+    public TheSpawnLanguage getLanguage() {
+        return tsl;
     }
 
     public TSLSyntaxError getSyntaxError() {
@@ -63,7 +95,7 @@ public class TSLDocument {
 
     public TSLSSemanticTokens generateSemanticTokens() {
         TSLSSemanticTokens semanticTokens = new TSLSSemanticTokens();
-        if(ruleset == null) return semanticTokens;
+        if (ruleset == null) return semanticTokens;
         for (TSLSnippet snippet : ruleset.getSnippets()) {
             for (TSLToken token : snippet.getAllTokens()) {
                 if (token instanceof TSLSymbol) {
@@ -72,7 +104,7 @@ public class TSLDocument {
                             .setLine(token.getLine())
                             .setCharacter(token.getCharacter())
                             .setLength(token.getRaw().length())
-                            .setType(TSLSSemanticTokens.TokenTypes.FUNCTION)
+                            .setType(TSLSSemanticTokenCapabilities.TokenTypes.FUNCTION)
                             .setModifier(0));
 
                 } else if (token instanceof TSLExpression) {
@@ -84,7 +116,7 @@ public class TSLDocument {
                                 .setLine(token.getLine())
                                 .setCharacter(token.getCharacter() + 2 + start)
                                 .setLength(length)
-                                .setType(TSLSSemanticTokens.TokenTypes.VARIABLE)
+                                .setType(TSLSSemanticTokenCapabilities.TokenTypes.VARIABLE)
                                 .setModifier(0));
                     });
                 }

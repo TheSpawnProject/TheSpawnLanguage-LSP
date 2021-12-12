@@ -1,8 +1,8 @@
 package net.programmer.igoodie.lsp;
 
+import net.programmer.igoodie.lsp.init.TSLSCapabilities;
 import net.programmer.igoodie.lsp.service.TSLSTextDocumentService;
 import net.programmer.igoodie.lsp.service.TSLSWorkspaceService;
-import net.programmer.igoodie.lsp.tokens.TSLSSemanticTokens;
 import net.programmer.igoodie.tsl.TheSpawnLanguage;
 import org.eclipse.lsp4j.*;
 import org.eclipse.lsp4j.services.*;
@@ -30,22 +30,21 @@ public class TSLServer implements LanguageServer, LanguageClientAware {
 
     @Override
     public CompletableFuture<InitializeResult> initialize(InitializeParams params) {
-        ServerCapabilities capabilities = new ServerCapabilities();
-        capabilities.setTextDocumentSync(TextDocumentSyncKind.Full);
+        ServerCapabilities serverCapabilities = new ServerCapabilities();
+        serverCapabilities.setTextDocumentSync(TextDocumentSyncKind.Full);
 
-        CompletionOptions completionOptions = new CompletionOptions();
-        capabilities.setCompletionProvider(completionOptions);
+        // Register all the capabilities
+        TSLSCapabilities.REGISTRY.forEach(cap -> cap.register(serverCapabilities));
 
+        // TODO: Turn into TSLSCapabilities<T>
         HoverOptions hoverOptions = new HoverOptions();
-        capabilities.setHoverProvider(hoverOptions);
-
-        capabilities.setSemanticTokensProvider(TSLSSemanticTokens.getSemanticTokensWithRegistrationOptions());
+        serverCapabilities.setHoverProvider(hoverOptions);
 
         ServerInfo serverInfo = new ServerInfo();
         serverInfo.setName("TSL");
         serverInfo.setVersion(TheSpawnLanguage.TSL_VERSION);
 
-        InitializeResult result = new InitializeResult(capabilities, serverInfo);
+        InitializeResult result = new InitializeResult(serverCapabilities, serverInfo);
         return CompletableFuture.completedFuture(result);
     }
 

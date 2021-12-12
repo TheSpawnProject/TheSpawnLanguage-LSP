@@ -1,13 +1,11 @@
 package net.programmer.igoodie.lsp.tokens;
 
 import net.programmer.igoodie.tsl.util.ISerializable;
-import org.eclipse.lsp4j.*;
+import org.eclipse.lsp4j.SemanticTokens;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TSLSSemanticTokens implements ISerializable<SemanticTokens> {
 
@@ -59,69 +57,19 @@ public class TSLSSemanticTokens implements ISerializable<SemanticTokens> {
         }
     }
 
-    public enum TokenTypes {
-        COMMENT(0, SemanticTokenTypes.Comment),
-        FUNCTION(1, SemanticTokenTypes.Function),
-        VARIABLE(2, SemanticTokenTypes.Variable),
-        ;
-
-        private final int id;
-        private final String value;
-
-        TokenTypes(int id, String value) {
-            this.id = id;
-            this.value = value;
+    public String debugString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        List<Integer> data = serialize().getData();
+        for (int i = 0; i < data.size() / 5; i++) {
+            stringBuilder
+                    .append(tokens.get(i)).append("\n")
+                    .append(data.get(5 * i)).append(" ")
+                    .append(data.get(5 * i + 1)).append(" ")
+                    .append(data.get(5 * i + 2)).append(" ")
+                    .append(data.get(5 * i + 3)).append(" ")
+                    .append(data.get(5 * i + 4)).append("\n");
         }
-
-        public int getId() {
-            return id;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
-
-    public enum TokenTypeModifiers {
-//        DECLARATION(1, SemanticTokenModifiers.Declaration),
-//        READONLY(1 << 1, SemanticTokenModifiers.Readonly),
-//        DOCUMENTATION(1 << 2, SemanticTokenModifiers.Documentation)
-        ;
-
-        private final int id;
-        private final String value;
-
-        TokenTypeModifiers(int id, String value) {
-            this.id = id;
-            this.value = value;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
-
-    public static List<String> getTokenTypes() {
-        return Arrays.stream(TokenTypes.values())
-                .map(TokenTypes::getValue)
-                .collect(Collectors.toList());
-    }
-
-    public static List<String> getTokenTypeModifiers() {
-        return Arrays.stream(TokenTypeModifiers.values())
-                .map(TokenTypeModifiers::getValue)
-                .collect(Collectors.toList());
-    }
-
-    public static SemanticTokensWithRegistrationOptions getSemanticTokensWithRegistrationOptions() {
-        SemanticTokensLegend legend = new SemanticTokensLegend(getTokenTypes(), getTokenTypeModifiers());
-        SemanticTokensWithRegistrationOptions options = new SemanticTokensWithRegistrationOptions(legend);
-        options.setFull(new SemanticTokensServerFull());
-        return options;
+        return stringBuilder.toString();
     }
 
 }

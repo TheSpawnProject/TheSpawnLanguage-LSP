@@ -6,20 +6,29 @@ plugins {
 group 'net.programmer.igoodie'
 version '0.0.1'
 
+def env = System.getenv("ENV") ?: "development"
+env = "development"
+
 repositories {
     mavenCentral()
     maven { url 'https://jitpack.io' }
 }
 
 dependencies {
+    implementation 'org.jetbrains:annotations:22.0.0'
+
     // LSP4J - Language Server Framework
     implementation group: 'org.eclipse.lsp4j', name: 'org.eclipse.lsp4j', version: '0.12.0'
 
     // RuntimeGoodies
-    implementation "com.github.iGoodie:RuntimeGoodies:1.0.0"
+    implementation env.equalsIgnoreCase("production")
+            ? "com.github.iGoodie:RuntimeGoodies:1.0.0"
+            : project(":x-runtime-goodies")
 
     // TheSpawnLanguage (TSL)
-    implementation 'com.github.TheSpawnProject:The-Spawn-Language:c8d9e2a321'
+    implementation env.equalsIgnoreCase("production")
+            ? "com.github.TheSpawnProject:The-Spawn-Language:c8d9e2a321"
+            : project(":x-tsl")
 
     // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.0'

@@ -1,1 +1,9 @@
 rootProject.name = 'TheSpawnLanguage-LSP'
+
+def env = System.getenv("ENV") ?: "development"
+
+include ":x-runtime-goodies"
+project(":x-runtime-goodies").projectDir = new File(settingsDir, "../../@iGoodie/RuntimeGoodies")
+
+include ":x-tsl"
+project(":x-tsl").projectDir = new File(settingsDir, "../TheSpawnLanguage")
