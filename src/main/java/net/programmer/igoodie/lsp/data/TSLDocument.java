@@ -3,17 +3,19 @@ package net.programmer.igoodie.lsp.data;
 import net.programmer.igoodie.lsp.capability.TSLSSemanticTokenCapabilities;
 import net.programmer.igoodie.lsp.tokens.TSLSSemanticToken;
 import net.programmer.igoodie.lsp.tokens.TSLSSemanticTokens;
+import net.programmer.igoodie.lsp.util.CursorPlacement;
 import net.programmer.igoodie.tsl.TheSpawnLanguage;
 import net.programmer.igoodie.tsl.exception.TSLSyntaxError;
+import net.programmer.igoodie.tsl.parser.TSLLexer;
 import net.programmer.igoodie.tsl.parser.TSLParser;
 import net.programmer.igoodie.tsl.parser.snippet.TSLCaptureSnippet;
 import net.programmer.igoodie.tsl.parser.snippet.TSLSnippet;
+import net.programmer.igoodie.tsl.parser.snippet.TSLSnippetBuffer;
 import net.programmer.igoodie.tsl.parser.token.TSLExpression;
 import net.programmer.igoodie.tsl.parser.token.TSLSymbol;
 import net.programmer.igoodie.tsl.parser.token.TSLToken;
 import net.programmer.igoodie.tsl.runtime.TSLRuleset;
 import net.programmer.igoodie.tsl.util.ExpressionUtils;
-import net.programmer.igoodie.util.ArrayAccessor;
 import org.eclipse.lsp4j.Position;
 
 import java.util.List;
@@ -26,6 +28,7 @@ public class TSLDocument {
 
     protected TheSpawnLanguage tsl = new TheSpawnLanguage();
     protected TSLRuleset ruleset = new TSLParser(tsl).parse("");
+    protected TSLLexer lexer = new TSLLexer("");
     protected TSLSyntaxError syntaxError;
 
     public TSLDocument(String uri) {
@@ -38,10 +41,11 @@ public class TSLDocument {
     }
 
     public void setText(String text) {
-        this.lines = text.split("\r?\n");
+        this.lines = text.split("\\r?\\n");
         try {
             this.syntaxError = null;
             this.ruleset = new TSLParser(tsl).parse(text);
+            this.lexer = new TSLLexer(text).lex();
 
         } catch (TSLSyntaxError syntaxError) {
             this.syntaxError = syntaxError;
@@ -56,25 +60,8 @@ public class TSLDocument {
         return lines;
     }
 
-    public String getWord(Position position) {
-        String line = ArrayAccessor.of(lines).getOrDefault(position.getLine(), "");
-        int start = 0;
-        int end = 0;
-        for (int i = 0; i < line.length(); i++) {
-            char prev = i == 0 ? '\0' : line.charAt(i - 1);
-            char current = line.charAt(i);
-
-            if (current != ' ' && Character.isWhitespace(prev)) {
-                start = i;
-            }
-
-            end = i;
-
-            if (position.getCharacter() == i) {
-                break;
-            }
-        }
-        return start == end ? "" : line.substring(start, end);
+    public CursorPlacement getPlacement(Position position) {
+        return new CursorPlacement(this, position);
     }
 
     public TheSpawnLanguage getLanguage() {
@@ -85,11 +72,11 @@ public class TSLDocument {
         return syntaxError;
     }
 
-    public List<TSLSnippet> getAllSnippets() {
-        return ruleset.getSnippets();
+    public List<TSLSnippetBuffer> getSnippetBuffers() {
+        return lexer.getSnippets();
     }
 
-    public Map<String, TSLCaptureSnippet> getCaptureSnippets() {
+    public Map<String, TSLCaptureSnippet> getParsedCaptureSnippets() {
         return ruleset.getCaptures();
     }
 

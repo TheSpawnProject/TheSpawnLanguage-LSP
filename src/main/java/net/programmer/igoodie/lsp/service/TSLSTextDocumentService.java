@@ -3,9 +3,8 @@ package net.programmer.igoodie.lsp.service;
 import net.programmer.igoodie.lsp.TSLServer;
 import net.programmer.igoodie.lsp.data.TSLDocument;
 import net.programmer.igoodie.lsp.data.TSLSOpenDocuments;
-import net.programmer.igoodie.lsp.tokens.TSLSSemanticTokens;
-import net.programmer.igoodie.tsl.parser.token.TSLCaptureCall;
-import net.programmer.igoodie.util.StringUtilities;
+import net.programmer.igoodie.lsp.util.CursorPlacement;
+import net.programmer.igoodie.tsl.parser.snippet.TSLSnippetBuffer;
 import org.eclipse.lsp4j.*;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
 import org.eclipse.lsp4j.services.TextDocumentService;
@@ -13,18 +12,19 @@ import org.eclipse.lsp4j.services.TextDocumentService;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 public class TSLSTextDocumentService implements TextDocumentService {
 
     private final TSLServer server;
     private final TSLSDiagnosticService diagnosticService;
+    private final TSLSCompletionService completionService;
 
     private final TSLSOpenDocuments openDocuments;
 
     public TSLSTextDocumentService(TSLServer server) {
         this.server = server;
         this.diagnosticService = new TSLSDiagnosticService();
+        this.completionService = new TSLSCompletionService();
         this.openDocuments = new TSLSOpenDocuments();
     }
 
@@ -34,65 +34,29 @@ public class TSLSTextDocumentService implements TextDocumentService {
             List<CompletionItem> completionList = new LinkedList<>();
 
             TSLDocument tslDocument = openDocuments.getDocument(params.getTextDocument());
+            CursorPlacement placement = tslDocument.getPlacement(params.getPosition());
 
-//            {
-//                CompletionItem completionItem = new CompletionItem();
-//                completionItem.setLabel("tsl:word_debug");
-//                completionItem.setDetail(tslDocument.getWord(param.get));
-//                completionItem.setDocumentation(new MarkupContent(MarkupKind.MARKDOWN,
-//                        "```tsl\n" + "\n```"));
-//                completionItem.setKind(CompletionItemKind.Constant);
-//                completionList.add(completionItem);
-//            }
+            if (placement.getSnippetType().orElse(null) == TSLSnippetBuffer.Type.TAG) {
+//                completionList.addAll(completionService.getTagKeywords(params, tslDocument));
 
-            tslDocument.getLanguage().ACTION_REGISTRY.stream().forEach(entry -> {
-                String actionName = StringUtilities.allUpper(entry.getKey());
-                CompletionItem completionItem = new CompletionItem();
-                completionItem.setLabel(actionName);
-                completionItem.setDetail("Action: " + actionName);
-                completionItem.setDocumentation(new MarkupContent(MarkupKind.MARKDOWN,
-                        "```tsl\n" + "\n```"));
-                completionItem.setKind(CompletionItemKind.Constant);
-                completionList.add(completionItem);
-            });
+            } else if (placement.getSnippetType().orElse(null) == TSLSnippetBuffer.Type.RULE) {
+//                completionList.addAll(completionService.getActionKeywords(params, tslDocument));
+//                completionList.addAll(completionService.getCaptures(params, tslDocument));
 
-            tslDocument.getCaptureSnippets().forEach((captureName, snippet) -> {
-                TSLCaptureCall headerToken = snippet.getHeaderToken();
-                List<String> headerArgs = headerToken.getArgs();
-                CompletionItem completionItem = new CompletionItem();
-                StringBuilder builder = new StringBuilder(snippet.getName().replaceAll("\\$", "\\$"));
-                if (headerArgs != null && headerArgs.size() != 0) {
-                    builder.append('(');
-                    for (int i = 0; i < headerArgs.size(); i++) {
-                        builder.append("${")
-                                .append(i + 1)
-                                .append(":")
-                                .append(headerArgs.get(i))
-                                .append("}");
-                        if (i != headerArgs.size() - 1) {
-                            builder.append(", ");
-                        }
-                    }
-                    builder.append(")");
-                }
-                completionItem.setInsertText(builder.toString());
-                completionItem.setInsertTextFormat(InsertTextFormat.Snippet);
-                completionItem.setLabel("$" + captureName);
-                completionItem.setDetail("Detail text here");
-                completionItem.setDocumentation(new MarkupContent(MarkupKind.MARKDOWN,
-                        snippet.getCapturedTokens().stream()
-                                .map(token -> token.getRaw().replaceAll("`", "\\`"))
-                                .collect(Collectors.joining(" ", "```tsl\n = ", "\n```"))));
-                completionItem.setKind(CompletionItemKind.Function);
-                completionList.add(completionItem);
-            });
+            } else if(placement.getSnippetType().orElse(null) == TSLSnippetBuffer.Type.CAPTURE) {
+                completionList.addAll(completionService.getActionKeywords(params, tslDocument));
+                completionList.addAll(completionService.getCaptures(params, tslDocument));
 
-            CompletionItem completionItem = new CompletionItem();
-            completionItem.setLabel("tsl:semantic_debug");
-            TSLSSemanticTokens semanticTokens = tslDocument.generateSemanticTokens();
-            completionItem.setInsertText(semanticTokens.debugString());
-            completionItem.setKind(CompletionItemKind.Module);
-            completionList.add(completionItem);
+            } else {
+
+            }
+
+//            CompletionItem completionItem = new CompletionItem();
+//            completionItem.setLabel("tsl:semantic_debug");
+//            TSLSSemanticTokens semanticTokens = tslDocument.generateSemanticTokens();
+//            completionItem.setInsertText(semanticTokens.debugString());
+//            completionItem.setKind(CompletionItemKind.Module);
+//            completionList.add(completionItem);
 
             return Either.forLeft(completionList);
         });
