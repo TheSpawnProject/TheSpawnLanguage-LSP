@@ -75,11 +75,10 @@ public class TSLSTextDocumentService implements TextDocumentService {
 
     @Override
     public CompletableFuture<Hover> hover(HoverParams params) {
-        Hover hover = new Hover();
-
         TSLDocument tslDocument = openDocuments.getDocument(params.getTextDocument());
         CursorPlacement placement = tslDocument.getPlacement(params.getPosition());
 
+        Hover hover = new Hover();
         hover.setContents(placement.debugContent());
 
         return CompletableFuture.completedFuture(hover);
@@ -90,6 +89,37 @@ public class TSLSTextDocumentService implements TextDocumentService {
         TSLDocument tslDocument = openDocuments.getDocument(params.getTextDocument());
         SemanticTokens serialized = tslDocument.generateSemanticTokens().serialize();
         return CompletableFuture.completedFuture(serialized);
+    }
+
+    @Override
+    public CompletableFuture<List<? extends TextEdit>> onTypeFormatting(DocumentOnTypeFormattingParams params) {
+        String typedText = params.getCh();
+        List<TextEdit> edits = new LinkedList<>();
+
+        MessageParams messageParams = new MessageParams();
+        messageParams.setMessage(typedText);
+        messageParams.setType(MessageType.Info);
+        server.getClient().showMessage(messageParams);
+
+        if (typedText.startsWith("\n")) {
+            Position position = params.getPosition();
+            TSLDocument tslDocument = openDocuments.getDocument(params.getTextDocument());
+            CursorPlacement placement = tslDocument.getPlacement(position);
+
+            if (placement.getSnippetType().filter(type -> type == TSLSnippetBuffer.Type.COMMENT).isPresent()) {
+                TextEdit textEdit = new TextEdit();
+                textEdit.setRange(new Range(position, position));
+                textEdit.setNewText("<FORMATTINGHERE>");
+                edits.add(textEdit);
+            }
+        }
+
+        return CompletableFuture.completedFuture(edits);
+    }
+
+    @Override
+    public CompletableFuture<List<? extends TextEdit>> formatting(DocumentFormattingParams params) {
+        return TextDocumentService.super.formatting(params); // TODO
     }
 
     /* -------------------------------------- */
@@ -107,6 +137,7 @@ public class TSLSTextDocumentService implements TextDocumentService {
         for (TextDocumentContentChangeEvent change : params.getContentChanges()) {
             tslDocument.setText(change.getText());
         }
+
         PublishDiagnosticsParams diagnosticsParams = diagnosticService.diagnose(tslDocument);
         server.getClient().publishDiagnostics(diagnosticsParams);
     }

@@ -26,6 +26,7 @@ public class CursorPlacement {
     private @Nullable TSLToken nextToken;
     private String landedCharacter;
 
+    private TSLSnippetBuffer[] lineBuffers;
     private TSLSnippetBuffer.Type[] lineTypes;
 
     public CursorPlacement(@NotNull TSLDocument tslDocument, @NotNull Position position) {
@@ -36,13 +37,16 @@ public class CursorPlacement {
     }
 
     private void analyzeDocument() {
+        lineBuffers = new TSLSnippetBuffer[tslDocument.getLines().length];
         lineTypes = new TSLSnippetBuffer.Type[tslDocument.getLines().length];
+        ArrayAccessor<TSLSnippetBuffer> lineBuffersAccessor = ArrayAccessor.of(lineBuffers);
         ArrayAccessor<TSLSnippetBuffer.Type> lineTypesAccessor = ArrayAccessor.of(lineTypes);
 
         for (TSLSnippetBuffer snippetBuffer : tslDocument.getSnippetBuffers()) {
             List<TSLToken> tokens = snippetBuffer.getTokens();
             for (TSLToken token : tokens) {
                 int line = token.getLine();
+                lineBuffersAccessor.set(line - 1, snippetBuffer);
                 lineTypesAccessor.set(line - 1, snippetBuffer.getType());
             }
         }
@@ -178,6 +182,16 @@ public class CursorPlacement {
 
     public Optional<TSLSnippetBuffer.Type> getSnippetType() {
         return Optional.ofNullable(snippetType);
+    }
+
+    public Optional<TSLSnippetBuffer> getSnippetAbove() {
+        int line = position.getLine();
+        return Optional.ofNullable(ArrayAccessor.of(lineBuffers).get(line - 1));
+    }
+
+    public Optional<TSLSnippetBuffer> getSnippetBelow() {
+        int line = position.getLine();
+        return Optional.ofNullable(ArrayAccessor.of(lineBuffers).get(line + 1));
     }
 
     public MarkupContent debugContent() {

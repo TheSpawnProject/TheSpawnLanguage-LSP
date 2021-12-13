@@ -36,10 +36,6 @@ public class TSLServer implements LanguageServer, LanguageClientAware {
         // Register all the capabilities
         TSLSCapabilities.REGISTRY.forEach(cap -> cap.register(serverCapabilities));
 
-        // TODO: Turn into TSLSCapabilities<T>
-        HoverOptions hoverOptions = new HoverOptions();
-        serverCapabilities.setHoverProvider(hoverOptions);
-
         ServerInfo serverInfo = new ServerInfo();
         serverInfo.setName("TSL");
         serverInfo.setVersion(TheSpawnLanguage.TSL_VERSION);

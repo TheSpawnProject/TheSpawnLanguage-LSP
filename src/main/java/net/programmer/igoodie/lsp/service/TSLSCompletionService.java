@@ -49,7 +49,7 @@ public class TSLSCompletionService {
             CompletionItem completionItem = new CompletionItem();
             TSLCaptureCall headerToken = snippet.getHeaderToken();
             List<String> headerArgs = headerToken.getArgs();
-            StringBuilder builder = new StringBuilder(snippet.getName().replaceAll("\\$", "\\$"));
+            StringBuilder builder = new StringBuilder("\\$" + captureName);
             if (headerArgs != null && headerArgs.size() != 0) {
                 builder.append('(');
                 for (int i = 0; i < headerArgs.size(); i++) {
