@@ -20,6 +20,7 @@ public class CursorPlacement {
     private @NotNull final Position position;
 
     private @Nullable TSLSnippetBuffer.Type snippetType;
+    private @Nullable TSLSnippetBuffer snippetBuffer;
     private @Nullable TSLToken previousToken;
     private @Nullable TSLToken landedToken;
     private @Nullable TSLToken nextToken;
@@ -69,49 +70,77 @@ public class CursorPlacement {
 
                 int snippetLine = token.getLine();
                 if (line != snippetLine) continue; // Oopsie, not this line
-                this.snippetType = snippetBuffer.getType();
 
                 // Landed right in a token
                 if (inRange(character, token.getCharacter(), token.getCharacter() + token.getRaw().length())) {
                     this.previousToken = previousToken;
                     this.landedToken = token;
                     this.nextToken = nextToken;
+                    this.snippetBuffer = snippetBuffer;
+                    this.snippetType = snippetBuffer.getType();
                     break;
                 }
 
                 // Landed right between prev and token
                 if (previousToken == null && inRange(character, 0, token.getCharacter())) {
                     this.nextToken = token;
+                    this.snippetBuffer = snippetBuffer;
+                    this.snippetType = snippetBuffer.getType();
                     break;
 
                 } else if (previousToken != null && inRange(character, previousToken.getCharacter() + previousToken.getRaw().length(), token.getCharacter())) {
                     this.previousToken = previousToken;
                     this.nextToken = token;
+                    this.snippetBuffer = snippetBuffer;
+                    this.snippetType = snippetBuffer.getType();
                     break;
                 }
 
                 // Landed right between next and token
                 if (nextToken == null && character > token.getCharacter() + token.getRaw().length()) {
                     this.previousToken = token;
+                    this.snippetBuffer = snippetBuffer;
+                    this.snippetType = snippetBuffer.getType();
                     break;
 
                 } else if (nextToken != null && inRange(character, token.getCharacter() + token.getRaw().length(), nextToken.getCharacter())) {
                     this.previousToken = token;
                     this.nextToken = nextToken;
+                    this.snippetBuffer = snippetBuffer;
+                    this.snippetType = snippetBuffer.getType();
                     break;
                 }
             }
+        }
 
-            // After iterating thru all the snippets, none of them matched
-            if (snippetType == null) {
-                ArrayAccessor<TSLSnippetBuffer.Type> lineTypeAccessor = ArrayAccessor.of(lineTypes);
-                TSLSnippetBuffer.Type previousLineType = lineTypeAccessor.get(line - 2);
-                TSLSnippetBuffer.Type nextLineType = lineTypeAccessor.get(line);
-
-                // Absolute empty lines count as Rule beginnings
-                this.snippetType = previousLineType == null
-                        ? TSLSnippetBuffer.Type.RULE : previousLineType;
+        if (snippetBuffer == null) { // Still couldn't match, is it a trailing or leading cursor?
+            for (TSLSnippetBuffer snippetBuffer : tslDocument.getSnippetBuffers()) {
+                for (TSLToken snippetToken : snippetBuffer.getTokens()) {
+                    int snippetLine = snippetToken.getLine();
+                    if (snippetLine == line) {
+                        if (character < snippetToken.getCharacter()) {
+                            this.snippetBuffer = snippetBuffer;
+                            this.snippetType = this.snippetBuffer.getType();
+                            this.nextToken = snippetToken;
+                        } else {
+                            this.snippetBuffer = snippetBuffer;
+                            this.snippetType = this.snippetBuffer.getType();
+                            this.previousToken = snippetToken;
+                        }
+                    }
+                }
             }
+        }
+
+        // After iterating thru all the snippets, none of them matched
+        if (snippetType == null) {
+            ArrayAccessor<TSLSnippetBuffer.Type> lineTypeAccessor = ArrayAccessor.of(lineTypes);
+            TSLSnippetBuffer.Type previousLineType = lineTypeAccessor.get(line - 2);
+            TSLSnippetBuffer.Type nextLineType = lineTypeAccessor.get(line);
+
+            // Absolute empty lines count as Rule beginnings
+            this.snippetType = previousLineType == null
+                    ? TSLSnippetBuffer.Type.RULE : previousLineType;
         }
     }
 
@@ -141,6 +170,10 @@ public class CursorPlacement {
 
     public Optional<TSLToken> getNextToken() {
         return Optional.ofNullable(nextToken);
+    }
+
+    public Optional<TSLSnippetBuffer> getSnippetBuffer() {
+        return Optional.ofNullable(snippetBuffer);
     }
 
     public Optional<TSLSnippetBuffer.Type> getSnippetType() {

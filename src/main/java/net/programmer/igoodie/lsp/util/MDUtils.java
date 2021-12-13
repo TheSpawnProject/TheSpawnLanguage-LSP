@@ -19,4 +19,8 @@ public class MDUtils {
                 .collect(Collectors.joining(" ", "```tsl\n = ", "\n```"));
     }
 
+    public static String codeSnippet(String tslScript) {
+        return "```tsl\n" + tslScript + "\n```";
+    }
+
 }
