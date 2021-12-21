@@ -1,7 +1,7 @@
 package net.programmer.igoodie.lsp.init;
 
+import net.programmer.igoodie.goodies.registry.Registry;
 import net.programmer.igoodie.lsp.capability.*;
-import net.programmer.igoodie.registry.Registry;
 
 public class TSLSCapabilities {
 

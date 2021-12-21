@@ -24,6 +24,10 @@ public class TSLSDiagnosticService {
             Position endPos = new Position(syntaxError.getLine() - 1,
                     syntaxError.getCharacter() - 1 + (associatedToken == null ? 0 : associatedToken.getRaw().length()));
 
+            if (startPos.equals(endPos)) {
+                endPos.setCharacter(endPos.getCharacter() + 1);
+            }
+
             Range range = new Range(startPos, endPos);
 
             StackTraceElement stackElem = syntaxError.getStackTrace()[0];

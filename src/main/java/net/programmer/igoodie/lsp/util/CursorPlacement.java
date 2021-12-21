@@ -1,11 +1,11 @@
 package net.programmer.igoodie.lsp.util;
 
+import net.programmer.igoodie.goodies.util.accessor.ArrayAccessor;
+import net.programmer.igoodie.goodies.util.accessor.ListAccessor;
+import net.programmer.igoodie.goodies.util.accessor.StringCharAccessor;
 import net.programmer.igoodie.lsp.data.TSLDocument;
 import net.programmer.igoodie.tsl.parser.snippet.TSLSnippetBuffer;
 import net.programmer.igoodie.tsl.parser.token.TSLToken;
-import net.programmer.igoodie.util.accessor.ArrayAccessor;
-import net.programmer.igoodie.util.accessor.ListAccessor;
-import net.programmer.igoodie.util.accessor.StringCharAccessor;
 import org.eclipse.lsp4j.MarkupContent;
 import org.eclipse.lsp4j.Position;
 import org.jetbrains.annotations.NotNull;
@@ -26,30 +26,10 @@ public class CursorPlacement {
     private @Nullable TSLToken nextToken;
     private String landedCharacter;
 
-    private TSLSnippetBuffer[] lineBuffers;
-    private TSLSnippetBuffer.Type[] lineTypes;
-
     public CursorPlacement(@NotNull TSLDocument tslDocument, @NotNull Position position) {
         this.tslDocument = tslDocument;
         this.position = position;
-        analyzeDocument();
         calculateLandings();
-    }
-
-    private void analyzeDocument() {
-        lineBuffers = new TSLSnippetBuffer[tslDocument.getLines().length];
-        lineTypes = new TSLSnippetBuffer.Type[tslDocument.getLines().length];
-        ArrayAccessor<TSLSnippetBuffer> lineBuffersAccessor = ArrayAccessor.of(lineBuffers);
-        ArrayAccessor<TSLSnippetBuffer.Type> lineTypesAccessor = ArrayAccessor.of(lineTypes);
-
-        for (TSLSnippetBuffer snippetBuffer : tslDocument.getSnippetBuffers()) {
-            List<TSLToken> tokens = snippetBuffer.getTokens();
-            for (TSLToken token : tokens) {
-                int line = token.getLine();
-                lineBuffersAccessor.set(line - 1, snippetBuffer);
-                lineTypesAccessor.set(line - 1, snippetBuffer.getType());
-            }
-        }
     }
 
     private void calculateLandings() {
@@ -138,7 +118,7 @@ public class CursorPlacement {
 
         // After iterating thru all the snippets, none of them matched
         if (snippetType == null) {
-            ArrayAccessor<TSLSnippetBuffer.Type> lineTypeAccessor = ArrayAccessor.of(lineTypes);
+            ArrayAccessor<TSLSnippetBuffer.Type> lineTypeAccessor = ArrayAccessor.of(tslDocument.getLineTypes());
             TSLSnippetBuffer.Type previousLineType = lineTypeAccessor.get(line - 2);
             TSLSnippetBuffer.Type nextLineType = lineTypeAccessor.get(line);
 
@@ -186,12 +166,12 @@ public class CursorPlacement {
 
     public Optional<TSLSnippetBuffer> getSnippetAbove() {
         int line = position.getLine();
-        return Optional.ofNullable(ArrayAccessor.of(lineBuffers).get(line - 1));
+        return Optional.ofNullable(ArrayAccessor.of(tslDocument.getLineBuffers()).get(line - 1));
     }
 
     public Optional<TSLSnippetBuffer> getSnippetBelow() {
         int line = position.getLine();
-        return Optional.ofNullable(ArrayAccessor.of(lineBuffers).get(line + 1));
+        return Optional.ofNullable(ArrayAccessor.of(tslDocument.getLineBuffers()).get(line + 1));
     }
 
     public MarkupContent debugContent() {

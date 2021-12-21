@@ -1,5 +1,6 @@
 package net.programmer.igoodie.lsp.data;
 
+import net.programmer.igoodie.goodies.util.accessor.ArrayAccessor;
 import net.programmer.igoodie.lsp.capability.TSLSSemanticTokenCapabilities;
 import net.programmer.igoodie.lsp.tokens.TSLSSemanticToken;
 import net.programmer.igoodie.lsp.tokens.TSLSSemanticTokens;
@@ -31,6 +32,9 @@ public class TSLDocument {
     protected TSLLexer lexer = new TSLLexer("");
     protected TSLSyntaxError syntaxError;
 
+    private TSLSnippetBuffer[] lineBuffers;
+    private TSLSnippetBuffer.Type[] lineTypes;
+
     public TSLDocument(String uri) {
         this(uri, "");
     }
@@ -39,6 +43,42 @@ public class TSLDocument {
         this.uri = uri;
         setText(text);
     }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public String[] getLines() {
+        return lines;
+    }
+
+    public TheSpawnLanguage getLanguage() {
+        return tsl;
+    }
+
+    public TSLSyntaxError getSyntaxError() {
+        return syntaxError;
+    }
+
+    public TSLSnippetBuffer[] getLineBuffers() {
+        return lineBuffers;
+    }
+
+    public TSLSnippetBuffer.Type[] getLineTypes() {
+        return lineTypes;
+    }
+
+    /* ------------------------------------ */
+
+    public List<TSLSnippetBuffer> getSnippetBuffers() {
+        return lexer.getSnippets();
+    }
+
+    public Map<String, TSLCaptureSnippet> getParsedCaptureSnippets() {
+        return ruleset.getCaptures();
+    }
+
+    /* ------------------------------------ */
 
     public void setText(String text) {
         this.lines = text.split("\\r?\\n");
@@ -50,34 +90,29 @@ public class TSLDocument {
         } catch (TSLSyntaxError syntaxError) {
             this.syntaxError = syntaxError;
         }
-    }
-
-    public String getUri() {
-        return uri;
-    }
-
-    public String[] getLines() {
-        return lines;
+        this.analyzeDocument();
     }
 
     public CursorPlacement getPlacement(Position position) {
         return new CursorPlacement(this, position);
     }
 
-    public TheSpawnLanguage getLanguage() {
-        return tsl;
-    }
+    /* ------------------------------------ */
 
-    public TSLSyntaxError getSyntaxError() {
-        return syntaxError;
-    }
+    private void analyzeDocument() {
+        lineBuffers = new TSLSnippetBuffer[lines.length];
+        lineTypes = new TSLSnippetBuffer.Type[lines.length];
+        ArrayAccessor<TSLSnippetBuffer> lineBuffersAccessor = ArrayAccessor.of(lineBuffers);
+        ArrayAccessor<TSLSnippetBuffer.Type> lineTypesAccessor = ArrayAccessor.of(lineTypes);
 
-    public List<TSLSnippetBuffer> getSnippetBuffers() {
-        return lexer.getSnippets();
-    }
-
-    public Map<String, TSLCaptureSnippet> getParsedCaptureSnippets() {
-        return ruleset.getCaptures();
+        for (TSLSnippetBuffer snippetBuffer : this.getSnippetBuffers()) {
+            List<TSLToken> tokens = snippetBuffer.getTokens();
+            for (TSLToken token : tokens) {
+                int line = token.getLine();
+                lineBuffersAccessor.set(line - 1, snippetBuffer);
+                lineTypesAccessor.set(line - 1, snippetBuffer.getType());
+            }
+        }
     }
 
     public TSLSSemanticTokens generateSemanticTokens() {

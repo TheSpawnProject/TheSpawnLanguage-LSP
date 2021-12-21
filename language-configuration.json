@@ -1,17 +1,28 @@
 {
   "onEnterRules": [
     {
-      "beforeText": "#\\*",
+      "comment": "#* Some comment | line like that *#",
+      "beforeText": "#\\*.*",
+      "afterText": ".*\\*#$",
       "action": {
         "indent": "none",
-        "appendText": " *\n*#"
+        "appendText": " *\n"
       }
     },
     {
-      "beforeText": "^ \\*.*",
+      "comment": "#* Some comment line | like that",
+      "beforeText": "^(?!.*\\*#)#\\*.*$",
       "action": {
         "indent": "none",
-        "appendText": "*"
+        "appendText": " *\n *#"
+      }
+    },
+    {
+      "comment": " * One line of the | block comment",
+      "beforeText": "^ \\*(?!#).*",
+      "action": {
+        "indent": "none",
+        "appendText": "* "
       }
     }
   ],

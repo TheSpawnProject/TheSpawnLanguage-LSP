@@ -1,7 +1,7 @@
 package net.programmer.igoodie.lsp.capability;
 
-import net.programmer.igoodie.registry.Registrable;
-import net.programmer.igoodie.util.TypeUtilities;
+import net.programmer.igoodie.goodies.registry.Registrable;
+import net.programmer.igoodie.goodies.util.TypeUtilities;
 import org.eclipse.lsp4j.ServerCapabilities;
 
 public abstract class Capabilities<T> implements Registrable<Class<?>> {
