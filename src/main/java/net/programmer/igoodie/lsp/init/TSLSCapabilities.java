@@ -11,5 +11,6 @@ public class TSLSCapabilities {
     public static final TSLSCompletionCapabilities COMPLETION = REGISTRY.register(new TSLSCompletionCapabilities());
     public static final TSLSSemanticTokenCapabilities SEMANTIC_TOKENS = REGISTRY.register(new TSLSSemanticTokenCapabilities());
     public static final TSLSOnTypeFormattingCapabilities ON_TYPE_FORMATTING = REGISTRY.register(new TSLSOnTypeFormattingCapabilities());
+    public static final TSLSFoldingRangeCapabilities FOLDING_RANGE = REGISTRY.register(new TSLSFoldingRangeCapabilities());
 
 }

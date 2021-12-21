@@ -184,7 +184,11 @@ public class CursorPlacement {
                 "",
                 "**Land:** " + this.getLandedToken(),
                 "",
-                "**Next:** " + this.getNextToken()
+                "**Next:** " + this.getNextToken(),
+                "",
+                "---",
+                "",
+                "**Tokens:** " + getSnippetBuffer().map(TSLSnippetBuffer::getTokens)
         );
     }
 

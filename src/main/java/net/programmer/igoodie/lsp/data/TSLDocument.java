@@ -6,18 +6,20 @@ import net.programmer.igoodie.lsp.tokens.TSLSSemanticToken;
 import net.programmer.igoodie.lsp.tokens.TSLSSemanticTokens;
 import net.programmer.igoodie.lsp.util.CursorPlacement;
 import net.programmer.igoodie.tsl.TheSpawnLanguage;
-import net.programmer.igoodie.tsl.exception.TSLSyntaxError;
 import net.programmer.igoodie.tsl.parser.TSLLexer;
 import net.programmer.igoodie.tsl.parser.TSLParser;
 import net.programmer.igoodie.tsl.parser.snippet.TSLCaptureSnippet;
+import net.programmer.igoodie.tsl.parser.snippet.TSLDocSnippet;
 import net.programmer.igoodie.tsl.parser.snippet.TSLSnippet;
 import net.programmer.igoodie.tsl.parser.snippet.TSLSnippetBuffer;
+import net.programmer.igoodie.tsl.parser.token.TSLCaptureCall;
 import net.programmer.igoodie.tsl.parser.token.TSLExpression;
 import net.programmer.igoodie.tsl.parser.token.TSLSymbol;
 import net.programmer.igoodie.tsl.parser.token.TSLToken;
 import net.programmer.igoodie.tsl.runtime.TSLRuleset;
 import net.programmer.igoodie.tsl.util.ExpressionUtils;
 import org.eclipse.lsp4j.Position;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -30,7 +32,7 @@ public class TSLDocument {
     protected TheSpawnLanguage tsl = new TheSpawnLanguage();
     protected TSLRuleset ruleset = new TSLParser(tsl).parse("");
     protected TSLLexer lexer = new TSLLexer("");
-    protected TSLSyntaxError syntaxError;
+    protected Exception error;
 
     private TSLSnippetBuffer[] lineBuffers;
     private TSLSnippetBuffer.Type[] lineTypes;
@@ -56,8 +58,8 @@ public class TSLDocument {
         return tsl;
     }
 
-    public TSLSyntaxError getSyntaxError() {
-        return syntaxError;
+    public Exception getError() {
+        return error;
     }
 
     public TSLSnippetBuffer[] getLineBuffers() {
@@ -78,23 +80,43 @@ public class TSLDocument {
         return ruleset.getCaptures();
     }
 
+    public List<TSLSnippet> getParsedSnippets() {
+        return ruleset.getSnippets();
+    }
+
     /* ------------------------------------ */
 
     public void setText(String text) {
         this.lines = text.split("\\r?\\n");
         try {
-            this.syntaxError = null;
+            this.error = null;
             this.lexer = new TSLLexer(text).lex();
             this.ruleset = new TSLParser(tsl).parse(text);
 
-        } catch (TSLSyntaxError syntaxError) {
-            this.syntaxError = syntaxError;
+        } catch (Exception error) {
+            this.error = error;
         }
         this.analyzeDocument();
     }
 
     public CursorPlacement getPlacement(Position position) {
         return new CursorPlacement(this, position);
+    }
+
+    public @Nullable TSLDocSnippet getTSLDoc(TSLCaptureCall captureCall) {
+        try {
+            TSLCaptureSnippet captureSnippet = ruleset.getCaptureSnippet(captureCall);
+            int beginningLine = captureSnippet.getBeginningLine() - 1;
+            TSLSnippetBuffer aboveLineBuffer = lineBuffers[beginningLine - 1];
+            if (aboveLineBuffer.getType() == TSLSnippetBuffer.Type.TSLDOC) {
+                return ruleset.getTSLDoc(aboveLineBuffer.getBeginningLine());
+            } else {
+                return null;
+            }
+
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /* ------------------------------------ */

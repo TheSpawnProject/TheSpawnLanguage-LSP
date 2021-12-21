@@ -4,7 +4,10 @@ import net.programmer.igoodie.lsp.TSLServer;
 import net.programmer.igoodie.lsp.data.TSLDocument;
 import net.programmer.igoodie.lsp.data.TSLSOpenDocuments;
 import net.programmer.igoodie.lsp.util.CursorPlacement;
+import net.programmer.igoodie.lsp.util.MDUtils;
 import net.programmer.igoodie.tsl.parser.snippet.TSLSnippetBuffer;
+import net.programmer.igoodie.tsl.parser.token.TSLCaptureCall;
+import net.programmer.igoodie.tsl.parser.token.TSLString;
 import org.eclipse.lsp4j.*;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
 import org.eclipse.lsp4j.services.TextDocumentService;
@@ -12,12 +15,14 @@ import org.eclipse.lsp4j.services.TextDocumentService;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public class TSLSTextDocumentService implements TextDocumentService {
 
     private final TSLServer server;
     private final TSLSDiagnosticService diagnosticService;
     private final TSLSCompletionService completionService;
+    private final TSLSFoldingRangeService foldingRangeService;
 
     private final TSLSOpenDocuments openDocuments;
 
@@ -25,6 +30,7 @@ public class TSLSTextDocumentService implements TextDocumentService {
         this.server = server;
         this.diagnosticService = new TSLSDiagnosticService();
         this.completionService = new TSLSCompletionService();
+        this.foldingRangeService = new TSLSFoldingRangeService();
         this.openDocuments = new TSLSOpenDocuments();
     }
 
@@ -44,6 +50,17 @@ public class TSLSTextDocumentService implements TextDocumentService {
         Hover hover = new Hover();
         hover.setContents(placement.debugContent());
 
+        placement.getLandedToken()
+                .filter(token -> token instanceof TSLCaptureCall)
+                .map(token -> tslDocument.getTSLDoc(((TSLCaptureCall) token)))
+                .ifPresent(tslDocSnippet -> {
+                    hover.setContents(MDUtils.build(
+                            tslDocSnippet.getDocTokens().stream()
+                                    .map(TSLString::getRaw)
+                                    .collect(Collectors.joining(" "))
+                    ));
+                });
+
         return CompletableFuture.completedFuture(hover);
     }
 
@@ -52,6 +69,12 @@ public class TSLSTextDocumentService implements TextDocumentService {
         TSLDocument tslDocument = openDocuments.getDocument(params.getTextDocument());
         SemanticTokens serialized = tslDocument.generateSemanticTokens().serialize();
         return CompletableFuture.completedFuture(serialized);
+    }
+
+    @Override
+    public CompletableFuture<List<FoldingRange>> foldingRange(FoldingRangeRequestParams params) {
+        TSLDocument tslDocument = openDocuments.getDocument(params.getTextDocument());
+        return CompletableFuture.completedFuture(foldingRangeService.getFoldingRanges(tslDocument));
     }
 
     @Override
@@ -84,6 +107,8 @@ public class TSLSTextDocumentService implements TextDocumentService {
     public CompletableFuture<List<? extends TextEdit>> formatting(DocumentFormattingParams params) {
         return TextDocumentService.super.formatting(params); // TODO
     }
+
+
 
     /* -------------------------------------- */
 

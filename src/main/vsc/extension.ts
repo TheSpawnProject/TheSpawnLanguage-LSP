@@ -14,7 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   if (!JAVA_HOME) {
     vscode.window.showWarningMessage(
-      "Java is not installed in this device. TSL won't be able to assist you while coding your rulesets.",
+      "Java is not installed in this device. TSLS won't be able to assist you while coding your rulesets.",
       "Visit Download Page",
       "Ignore",
       "Don't Show This Again"

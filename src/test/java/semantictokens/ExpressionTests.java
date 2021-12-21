@@ -11,6 +11,7 @@ public class ExpressionTests {
     public void testExpressionCaptureVars() {
         TSLDocument tslDocument = new TSLDocument("", "$capture = ${{{x}} + {{x}} / 2 * Math.random() % {{x}}}");
         TSLSSemanticTokens semanticTokens = tslDocument.generateSemanticTokens();
+        System.out.println(semanticTokens.debugString());
         Assertions.assertEquals(4, semanticTokens.getTokens().size());
     }
 
@@ -109,7 +110,7 @@ public class ExpressionTests {
                 "%${_mult(10,20)} Time to ditch indentations, ${\"aye\"}!%\n" +
                 "ON Alert Event");
         TSLSSemanticTokens semanticTokens = tslDocument.generateSemanticTokens();
-        System.out.println(semanticTokens.serialize());
+        System.out.println(semanticTokens.serialize().getData());
     }
     
 }
