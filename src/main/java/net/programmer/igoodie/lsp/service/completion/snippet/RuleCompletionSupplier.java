@@ -29,7 +29,7 @@ public class RuleCompletionSupplier implements CompletionSupplier {
             }
 
         } else {
-            completionList.addAll(getActionKeywords(tslDocument));
+            completionList.addAll(getActionCompletions(tslDocument));
             if (!placement.getLandedToken().filter(token -> token instanceof TSLExpression).isPresent()) {
                 completionList.addAll(getCaptures(tslDocument));
             }

@@ -13,7 +13,7 @@ public class ExpressionCompletionSupplier implements CompletionSupplier {
     @Override
     public List<CompletionItem> supplyCompletion(CompletionParams params, TSLDocument tslDocument) {
         List<CompletionItem> completionList = new LinkedList<>();
-        completionList.addAll(getFunctions(tslDocument));
+        completionList.addAll(getFunctionCompletions(tslDocument));
         return completionList;
     }
 
