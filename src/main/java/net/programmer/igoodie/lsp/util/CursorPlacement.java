@@ -188,7 +188,11 @@ public class CursorPlacement {
                 "",
                 "---",
                 "",
-                "**Tokens:** " + getSnippetBuffer().map(TSLSnippetBuffer::getTokens)
+                "**Tokens:** " + getSnippetBuffer().map(TSLSnippetBuffer::getTokens),
+                "",
+                "**Begin Line:** " + getSnippetBuffer().map(TSLSnippetBuffer::getBeginningLine),
+                "",
+                "**End Line:** " + getSnippetBuffer().map(TSLSnippetBuffer::getEndingLine)
         );
     }
 

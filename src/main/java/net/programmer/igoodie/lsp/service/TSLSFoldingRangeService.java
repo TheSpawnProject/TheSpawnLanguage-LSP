@@ -6,6 +6,7 @@ import net.programmer.igoodie.tsl.parser.snippet.TSLSnippet;
 import org.eclipse.lsp4j.FoldingRange;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class TSLSFoldingRangeService {
@@ -13,6 +14,7 @@ public class TSLSFoldingRangeService {
     public List<FoldingRange> getFoldingRanges(TSLDocument tslDocument) {
         return tslDocument.getParsedSnippets().stream()
                 .map(this::snippetFoldingRange)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 

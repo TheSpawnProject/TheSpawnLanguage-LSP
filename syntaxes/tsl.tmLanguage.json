@@ -9,8 +9,6 @@
     { "include": "#tokens" }
   ],
   "fileTypes": ["tsl"],
-  "foldingStartMarker": "^[^\\s]",
-  "foldingStopMarker": "(^\\s+)|(^$)",
   "repository": {
     "ruleset_tags": {
       "patterns": [
